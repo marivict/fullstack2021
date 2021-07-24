@@ -10,7 +10,7 @@ const App = () => {
     get('https://restcountries.eu/rest/v2/all').
     then(response =>{
       setCountries(response.data)
-    },[])
+    },[countries])
   })
 
   const handleFilter = (e) =>{
@@ -23,13 +23,8 @@ const App = () => {
       if(filter === ''){
         return country.name
       } else if (country.name.toLowerCase().includes(filter.toLowerCase())){
-          if(country.length < 10){
-            return country.name
-          } else {
-            return <p>Too many matches, specify another filter</p>
-          }
+        return country.name
       }
-      console.log(country.length)
     })
 
   return (
