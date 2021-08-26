@@ -1,0 +1,28 @@
+
+.new {
+    height: 30px;
+    background: #4cc34a;
+    border-radius: 6px;
+    color: white;
+    padding: 10px;
+    padding-left: 20px;
+    margin: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.error{
+    height: 30px;
+    background: red;
+    border-radius: 6px;
+    color: white;
+    padding: 10px;
+    padding-left: 20px;
+    margin: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}

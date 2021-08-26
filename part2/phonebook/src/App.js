@@ -1,23 +1,26 @@
 // Dependencies
 import React,{useState, useEffect} from 'react'
 import axios from 'axios'
+import userServices from './services/users'
 
 // Components
 import Person from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [names, setNames] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] =  useState('')
+  const [message, setMessage] =  useState(null)
+  const [style, setStyle] = useState('')
 
   useEffect(() => {
-    axios
-    .get('http://localhost:3001/persons')
+    userServices.getAll()
     .then( response => {
-      setNames(response.data)
+      setNames(response)
     })
   }, [])
 
@@ -43,6 +46,19 @@ const getNames =  names.filter((name) => {
     
 })
 
+const replacePhone = (name, id) => {
+  // eslint-disable-next-line no-restricted-globals
+  const confirmAlert = confirm(`${name} is already added to phonebook, replace the old number, with a new one`)
+  const user = names.find(n => n.id === id)
+  const changeName = {...user, number:newNumber}
+  if(confirmAlert) {
+    userServices.update(id, changeName)
+    .then(response => 
+      setNames(names.map( name => name.id !== id ? name : response))
+    ) 
+  }
+}
+
   const addNames = (e) =>{
     e.preventDefault()
 
@@ -53,9 +69,16 @@ const getNames =  names.filter((name) => {
     
     const findRepeatedName = names.find(name=> name.name === newName)
     if(findRepeatedName){
-      alert(`${newName} is already added to phonebook`)
+      replacePhone(findRepeatedName.name, findRepeatedName.id)
     }else {
-      setNames(names.concat(newObjectName))
+      userServices.create(newObjectName).then(response =>
+        setNames(names.concat(response)
+      ))
+      setMessage(`${newName} has been added`)
+      setStyle('new')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
 
     setNewName('')
@@ -63,10 +86,35 @@ const getNames =  names.filter((name) => {
     
   }
 
+  const deletePhone = (id, name) => {
+    // eslint-disable-next-line no-restricted-globals
+    const confirmAlert = confirm(`Delete ${name} ?`)
+    if (confirmAlert)  {
+      return(
+        userServices
+        .remove(id)
+        .then(response =>
+            setNames(names.filter(name => name.id !== id))
+        )
+        .catch(error =>{
+          setMessage(`The information has been removed from the server`)
+          setStyle('error')
+
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        }
+        
+        )
+      )
+    }
+  }
+
   return (
     <div>
      <h1>PhoneBook</h1>
-     <Filter filter={filter} handleFilter={handleFilter} />
+     <Notification message={message} classStyle={style} />
+     <b>Filter: </b><Filter filter={filter} handleFilter={handleFilter} />
      <h1>Add New</h1>
       <PersonForm 
         addNames = {addNames}
@@ -76,7 +124,7 @@ const getNames =  names.filter((name) => {
         newNumber = {newNumber}
       />
      <h1>Numbers</h1>
-     <Person getNames={getNames} />
+     <Person getNames={getNames} deletePhone = {deletePhone} />
     </div>
   );
 }

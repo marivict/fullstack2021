@@ -1,10 +1,10 @@
 import React from 'react'
 import Name from './Name'
 
-const Persons = ({getNames}) => {
+const Persons = ({getNames, deletePhone}) => {
     return(
         <>
-             {getNames.map((name, index) => <Name name={name} key={index} />)}
+             {getNames.map((name, index) => <Name name={name} key={index} deletePhone={deletePhone}/>)}
         </>
     )
 }
