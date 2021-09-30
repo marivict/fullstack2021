@@ -48,7 +48,7 @@ const getNames =  names.filter((name) => {
 
 const replacePhone = (name, id) => {
   // eslint-disable-next-line no-restricted-globals
-  const confirmAlert = confirm(`${name} is already added to phonebook, replace the old number, with a new one`)
+  const confirmAlert = confirm(`${name} is already added to phonebook, Would you like to replace the old number with the new one?`)
   const user = names.find(n => n.id === id)
   const changeName = {...user, number:newNumber}
   if(confirmAlert) {
@@ -94,15 +94,21 @@ const replacePhone = (name, id) => {
         userServices
         .remove(id)
         .then(response =>
-            setNames(names.filter(name => name.id !== id))
+            setNames(names.filter(name => name.id !== id)),
+            setMessage(`The user has been deleted correctly`),
+            setStyle('error'),
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
         )
         .catch(error =>{
-          setMessage(`The information has been removed from the server`)
-          setStyle('error')
-
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          return(
+            setMessage(`The information has been removed from the server`),
+            setStyle('error'),
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          )
         }
         
         )
