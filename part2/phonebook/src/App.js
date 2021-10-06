@@ -71,9 +71,13 @@ const replacePhone = (name, id) => {
     if(findRepeatedName){
       replacePhone(findRepeatedName.name, findRepeatedName.id)
     }else {
-      userServices.create(newObjectName).then(response =>
+      userServices.create(newObjectName)
+      .then(response =>
         setNames(names.concat(response)
       ))
+      .catch(error => {
+        console.log(error.response.data)
+      })
       setMessage(`${newName} has been added`)
       setStyle('new')
       setTimeout(() => {
