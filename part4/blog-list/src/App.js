@@ -37,9 +37,8 @@ const App = ({blog}) => {
 
   const addLikes = (id) => {
     const post = posts.find( n => n.id === id)
-    const addLike = {...post, likes: like += 1 }
-    setPosts(addLike)
-    console.log(addLike)
+    const addLike = {...post, likes: post.likes += 1 }
+    setPosts(posts.map(post => post.id !== id ? post : addLike))
   }
 
   const addPost = (e) => {
@@ -49,7 +48,7 @@ const App = ({blog}) => {
       title:title,
       author:author,
       link:link,
-      likes:like
+      likes:0
     }
     setPosts(posts.concat(newObject))
 
