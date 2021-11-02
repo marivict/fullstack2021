@@ -1,13 +1,21 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
+import axios from 'axios'
 import './style/style.css'
 import Card from './components/Card'
 
-const App = ({blog}) => {
-  const [posts, setPosts] = useState(blog)
+const App = () => {
+  const [posts, setPosts] = useState([])
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [link, setLink] = useState('')
   let [like, setLike] = useState(0)
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/posts')
+    .then(response => {
+      setPosts(response.data)
+    })
+  })
 
   const handleTitle = (e) => {
     setTitle(e.target.value)
