@@ -2,20 +2,21 @@ import React,{useState, useEffect} from 'react'
 import axios from 'axios'
 import './style/style.css'
 import Card from './components/Card'
+import postServices from './services/posts'
 
 const App = () => {
   const [posts, setPosts] = useState([])
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [link, setLink] = useState('')
-  let [like, setLike] = useState(0)
 
   useEffect(() => {
-    axios.get('http://localhost:3001/posts')
-    .then(response => {
-      setPosts(response.data)
+    postServices
+    .getAll()
+    .then(initialState => {
+      setPosts(initialState)
     })
-  })
+  },[])
 
   const handleTitle = (e) => {
     setTitle(e.target.value)
@@ -32,7 +33,13 @@ const App = () => {
   const addLikes = (id) => {
     const post = posts.find( n => n.id === id)
     const addLike = {...post, likes: post.likes += 1 }
-    setPosts(posts.map(post => post.id !== id ? post : addLike))
+
+    postServices
+    .update(addLike, id)
+    .then(returnedPost =>{
+      setPosts(posts.map(post => post.id !== id ? post : returnedPost))
+    })    
+    
   }
 
   const addPost = (e) => {
@@ -44,7 +51,12 @@ const App = () => {
       link:link,
       likes:0
     }
-    setPosts(posts.concat(newObject))
+
+    postServices
+    .create(newObject)
+    .then(returnedPost => {
+      setPosts(posts.concat(returnedPost))
+    })
 
     setTitle('')
     setAuthor('')
