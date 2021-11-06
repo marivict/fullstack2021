@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 
 let posts = [
@@ -69,6 +71,12 @@ let posts = [
     }
 ]
 
+ const unknownEndpoint = (request, response) => {
+     response.status(404).send({error:'unknown enpoint'})
+ }
+
+ app.use(unknownEndpoint)
+
 app.get('/', (request, response) =>{
     response.send('<h1>Hello World</h1>')
 })
@@ -80,7 +88,42 @@ app.get('/api/posts', (request, response) => {
 app.get('/api/posts/:id', (request, response) => {
     const id = Number(request.params.id)
     const post = posts.find(post => post.id === id)
-    response.json(post)
+    if(post) {
+        response.json(post)
+    }
+    else {
+        response.sendStatus(204).end()
+    }
+})
+
+const generateId = () => {
+    const maxId = posts.length > 0
+   ? Math.max(...posts.map(p => p.id))
+   : 0
+
+   return maxId + 1
+}
+
+app.post('/api/posts', (request, response) => {
+   const body = request.body
+
+   if(!body.title || !body.author || !body.link || !body.link){
+    return response.status(400).json({
+        error: 'content missing'
+    })
+   }
+
+   const post = {
+       id: generateId(),
+       title: body.title,
+       author: body.author,
+       link: body.link,
+       likes: body.likes
+   }
+
+   posts = posts.concat(post)
+
+   response.json(post)
 })
 
 app.delete('/api/posts/:id', (request, response) => {
@@ -89,7 +132,7 @@ app.delete('/api/posts/:id', (request, response) => {
     response.sendStatus(204).end()
 })
 
-const PORT = 3001
+const PORT = proces.env.PORT  || 3001
 app.listen(PORT, () => {
     console.log(`server running on ${PORT}`)
 })
