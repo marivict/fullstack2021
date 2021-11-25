@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Card = ({post, addLikes}) => {
+const Card = ({post, addLikes, deletePost}) => {
     return(
       <div className='card-item'>
         <div className="btn-close">
-          <button>X</button>
+          <button onClick={deletePost}>X</button>
         </div>
         <h3>{post.title}</h3>
         <p><b>Author: </b>{post.author}</p>
