@@ -35,7 +35,7 @@ const App = () => {
     const addLike = {...post, likes: post.likes += 1 }
 
     postServices
-    .update(addLike, id)
+    .update(id, addLike)
     .then(returnedPost =>{
       setPosts(posts.map(post => post.id !== id ? post : returnedPost))
     })    
@@ -61,6 +61,19 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setLink('')
+  }
+
+  const deletePost = (id) => {
+    return(
+      postServices
+      .remove(id)
+      .then(() => {
+        return(setPosts(posts.filter(post => post.id !== id)))
+      })
+      .catch(() => {
+        console.log('there be an error')
+      })
+    )
   }
 
   return (
@@ -110,7 +123,11 @@ const App = () => {
             <Card 
               key={post.id} 
               post={post} 
-              addLikes={() => addLikes(post.id)}/>)}
+              addLikes={() => addLikes(post.id)}
+              deletePost={() => deletePost(post.id) }
+              />)
+              
+              }
         </div>
       </div>
     </div>
