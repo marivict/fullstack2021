@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "jest --verbose",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=test jest --verbose",
+    "dev": "NODE_ENV=development nodemon index.js",
     "lint": "eslint ."
   },
   "author": "",
@@ -19,6 +19,7 @@
     "mongoose": "^6.0.7"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "jest": "^27.4.2",
     "nodemon": "^2.0.12"
