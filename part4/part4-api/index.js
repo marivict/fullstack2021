@@ -75,8 +75,6 @@ let posts = [
      response.status(404).send({error:'unknown enpoint'})
  }
 
- app.use(unknownEndpoint)
-
 app.get('/', (request, response) =>{
     response.send('<h1>Hello World</h1>')
 })
@@ -132,7 +130,9 @@ app.delete('/api/posts/:id', (request, response) => {
     response.sendStatus(204).end()
 })
 
-const PORT = proces.env.PORT  || 3001
+app.use(unknownEndpoint)
+
+const PORT = process.env.PORT  || 3001
 app.listen(PORT, () => {
     console.log(`server running on ${PORT}`)
 })
