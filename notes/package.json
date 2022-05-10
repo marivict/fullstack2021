@@ -43,6 +43,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "json-server": "^0.16.3"
   }
 }
